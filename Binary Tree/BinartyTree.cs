@@ -1,9 +1,11 @@
+using System;
+
 public class BinaryTree<T>
     where T : IComparable<T>
 {
     public T Value { get; private set; }
-    public BinaryTree<T>? Left { get; private set; } = null;
-    public BinaryTree<T>? Right { get; private set; } = null;
+    public BinaryTree<T> Left { get; private set; } = null;
+    public BinaryTree<T> Right { get; private set; } = null;
     public void Add(T value)
     {
         if (this.Value is null || this.Value.CompareTo(default(T)) == 0)

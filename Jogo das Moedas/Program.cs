@@ -1,8 +1,8 @@
 ﻿using System;
 
-World.GerateNPCs(1500, 2500, 2000, 3000, 1000);
+World.GerateNPCs(1500, 2500, 2000, 3000, 1000, 5000);
 
-while (World.Round < 1000000)
+while (World.Bankrupt < 5000)
 {
     World.Play();
 }

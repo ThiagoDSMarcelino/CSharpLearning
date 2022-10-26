@@ -2,15 +2,15 @@ using System;
 
 public static class World
 {
-    private static NPC[] NPCs { get; set; } = new NPC[10000];
+    private static NPC[] NPCs { get; set; } = new NPC[15000];
     private static int index { get; set; } = 0;
     public static int TotalCoins { get; private set; } = World.NPCs.Length * 10;
     public static int Round { get; private set; } = 0;
     public static int Bankrupt { get; private set; } = 0;
     public static void GerateNPCs
-        (int cooperator, int cheater, int copycat, int fearful, int grudger)
+        (int cooperator, int cheater, int copycat, int fearful, int grudger, int mathematicals)
     {
-        if (cooperator + cheater + copycat + fearful + grudger != World.NPCs.Length)
+        if (cooperator + cheater + copycat + fearful + grudger + mathematicals > World.NPCs.Length)
             throw new Exception();
         for (int i = 0; i < cooperator; i++)
             World.AddNPC(new Cooperator());
@@ -22,6 +22,8 @@ public static class World
             World.AddNPC(new Fearful());
         for (int i = 0; i < grudger; i++)
             World.AddNPC(new Grudger());
+        for (int i = 0; i < mathematicals; i++)
+            World.AddNPC(new Mathematical());
     }
     private static void AddNPC(NPC npc)
     {
@@ -50,12 +52,12 @@ public static class World
         else if (npc1.decision() && !npc2.decision())
         {
             npc1.receive(-1);
-            npc2.receive(4);
+            npc2.receive(3);
             World.TotalCoins += 3;
         }
         else if (!npc1.decision() && npc2.decision())
         {
-            npc1.receive(4);
+            npc1.receive(3);
             npc2.receive(-1);
             World.TotalCoins += 3;
         }
