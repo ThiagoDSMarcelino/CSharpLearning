@@ -36,7 +36,7 @@ while (running)
                 }
                 catch (System.Exception e)
                 {
-                    Console.WriteLine(e.Data);
+                    Console.WriteLine(e.Message);
                 }
             }
             
@@ -67,14 +67,14 @@ while (running)
                     Console.WriteLine("Qual o nome do aluno? ");
                     name = Console.ReadLine(); 
                     
-                    Console.WriteLine("Qual curso o aluno vai fazer: ");
+                    Console.WriteLine("\nQual curso o aluno vai fazer: ");
                     APIRest.ReadCourses();
                     index = int.Parse(Console.ReadLine()) - 1;
                     break;
                 }
                 catch (System.Exception e)
                 {
-                    Console.WriteLine(e.Data);
+                    Console.WriteLine(e.Message);
                 }
             }
             
@@ -100,7 +100,7 @@ while (running)
                 }
                 catch (System.Exception e)
                 {
-                    Console.WriteLine(e.Data);
+                    Console.WriteLine(e.Message);
                 }
             }
             
@@ -132,7 +132,7 @@ while (running)
                 }
                 catch (System.Exception e)
                 {
-                    Console.WriteLine(e.Data);
+                    Console.WriteLine(e.Message);
                 }
             }
             
@@ -148,6 +148,6 @@ while (running)
             Console.WriteLine("Opção inválida");
             break;
     }
-    Console.WriteLine("Aperte qualquer tecla para prosseguir");
+    Console.WriteLine("\nAção concluída \nAperte qualquer tecla para prosseguir");
     Console.ReadKey(true);
 }
