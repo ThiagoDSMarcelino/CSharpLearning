@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
 
-public static class Database
+public static class APIRest
 {
     private static List<Student> Students { get; set; } = new List<Student>();
     private static List<Course> Courses { get; set; } = new List<Course>();
     public static int NumberCourses { get; private set; } = 0;
     public static int NumberStudents { get; private set; } = 0;
-    public static void AddCourse(string name, int workload)
+    public static void CreateCourse(string name, int workload)
     {
         if (name == "")
             throw new Exception("Nome inválido");
@@ -21,22 +21,22 @@ public static class Database
         {
             bool isValid = true;
             code = r.Next(999);
-            foreach (var item in Database.Courses)
+            foreach (var item in APIRest.Courses)
                 if (item.Code == code)
                     isValid = false;
             if (isValid)
                 break;
         }
         
-        Database.Courses.Add(new Course(name, code, workload));
-        Database.NumberCourses++;
+        APIRest.Courses.Add(new Course(name, code, workload));
+        APIRest.NumberCourses++;
     }
-    public static void AddStudent(string name, int index)
+    public static void CreateStudent(string name, int index)
     {
         if (name == "")
             throw new Exception("Nome inválido");
         
-        int courseCode = Database.Courses[index].Code;
+        int courseCode = APIRest.Courses[index].Code;
         
         Random r = new Random();
         int registration = 0;
@@ -44,41 +44,41 @@ public static class Database
         {
             bool isValid = true;
             registration = r.Next(999);
-            foreach (var item in Database.Students)
+            foreach (var item in APIRest.Students)
                 if (item.Registration == registration)
                     isValid = false;
             if (isValid)
                 break;
         }
 
-        Database.Students.Add(new Student(name, registration, courseCode));
-        Database.NumberStudents++;
+        APIRest.Students.Add(new Student(name, registration, courseCode));
+        APIRest.NumberStudents++;
     }
-    public static void ShowCourses()
+    public static void ReadCourses()
     {
-        for (int i = 0; i < Database.Courses.Count; i++)
-            Console.WriteLine($"{i+1} -- {Database.Courses[i].Name}");
+        for (int i = 0; i < APIRest.Courses.Count; i++)
+            Console.WriteLine($"{i+1} -- {APIRest.Courses[i].Name}");
     }
     public static void Grade(int index)
     {
-        int courseCode = Database.Courses[index].Code;
-        for (int i = 0; i < Database.Students.Count; i++)
+        int courseCode = APIRest.Courses[index].Code;
+        for (int i = 0; i < APIRest.Students.Count; i++)
         {
-            Console.WriteLine($"Qual a nota do aluno {Database.Students[i].Name} - {Database.Students[i].Registration}");
-            Database.Students[i].Grade = float.Parse(Console.ReadLine());
+            Console.WriteLine($"Qual a nota do aluno {APIRest.Students[i].Name} - {APIRest.Students[i].Registration}");
+            APIRest.Students[i].Grade = float.Parse(Console.ReadLine());
         }
     }
     public static void Statistics(int index)
     {
-        int courseCode = Database.Courses[index].Code;
+        int courseCode = APIRest.Courses[index].Code;
         int approved = 0, count = 0;
         float total = 0;
         
-        for (int i = 0; i < Database.Students.Count; i++)
+        for (int i = 0; i < APIRest.Students.Count; i++)
         {
-            if (Database.Students[i].Grade >= 7)
+            if (APIRest.Students[i].Grade >= 7)
                 approved++;
-            total += Database.Students[i].Grade;
+            total += APIRest.Students[i].Grade;
             count++;
         }
 

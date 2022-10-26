@@ -20,73 +20,123 @@ while (running)
     switch (choice)
     {
         case 1:
-            Console.WriteLine("Qual o nome do curso? ");
-            name = Console.ReadLine(); 
+            while (true)
+            {
+                try
+                {
+                    Console.WriteLine("Qual o nome do curso? ");
+                    name = Console.ReadLine(); 
+                    Console.WriteLine("Qual a carga horária do curso? ");
+                    workload = int.Parse(Console.ReadLine());
+                    break;
+                }
+                catch (System.IO.IOException)
+                {
+                    Console.WriteLine("Carga horária inválida");
+                }
+                catch (System.Exception e)
+                {
+                    Console.WriteLine(e.Data);
+                }
+            }
             
-            Console.WriteLine("Qual a carga horaria do curso? ");
-            workload = int.Parse(Console.ReadLine()); 
             
-            Database.AddCourse(name, workload);
+            APIRest.CreateCourse(name, workload);
             break;
         
         case 2:
-            if (Database.NumberCourses == 0)
+            if (APIRest.NumberCourses == 0)
             {
                 Console.WriteLine("Não há cursos cadastrados!");
                 break;
             }
-            Database.ShowCourses();
+            APIRest.ReadCourses();
             break;
         
         case 3:
-            if (Database.NumberCourses == 0)
+            if (APIRest.NumberCourses == 0)
             {
                 Console.WriteLine("Não há cursos cadastrados!");
                 break;
             }
 
-            Console.WriteLine("Qual o nome do aluno? ");
-            name = Console.ReadLine(); 
+            while (true)
+            {
+                try
+                {
+                    Console.WriteLine("Qual o nome do aluno? ");
+                    name = Console.ReadLine(); 
+                    
+                    Console.WriteLine("Qual curso o aluno vai fazer: ");
+                    APIRest.ReadCourses();
+                    index = int.Parse(Console.ReadLine()) - 1;
+                    break;
+                }
+                catch (System.Exception e)
+                {
+                    Console.WriteLine(e.Data);
+                }
+            }
             
-            Console.WriteLine("Qual curso o aluno vai fazer: ");
-            Database.ShowCourses();
-            index = int.Parse(Console.ReadLine()) - 1;
 
-            Database.AddStudent(name, index);
+            APIRest.CreateStudent(name, index);
             break;
         
         case 4:
-            if (Database.NumberStudents == 0)
+            if (APIRest.NumberStudents == 0)
             {
                 Console.WriteLine("Não há alunos cadastrados!");
                 break;
             }
 
-            Console.WriteLine("Para qual curso vai dar nota: ");
-            Database.ShowCourses();
-            index = int.Parse(Console.ReadLine()) - 1;
+            while (true)
+            {
+                try
+                {
+                    Console.WriteLine("Para qual curso vai dar nota: ");
+                    APIRest.ReadCourses();
+                    index = int.Parse(Console.ReadLine()) - 1;
+                    break;
+                }
+                catch (System.Exception e)
+                {
+                    Console.WriteLine(e.Data);
+                }
+            }
+            
 
-            Database.Grade(index);
+            APIRest.Grade(index);
             break;
         
         case 5:
-            if (Database.NumberCourses == 0)
+            if (APIRest.NumberCourses == 0)
             {
                 Console.WriteLine("Não há cursos cadastrados!");
                 break;
             }
 
-            if (Database.NumberStudents == 0)
+            if (APIRest.NumberStudents == 0)
             {
                 Console.WriteLine("Não há alunos cadastrados!");
                 break;
             }
 
-            Console.WriteLine("De qual curso deseja ver as estatísticas: ");
-            Database.ShowCourses();
-            index = int.Parse(Console.ReadLine()) - 1;
-
-            Database.Statistics(index);
+            while (true)
+            {
+                try
+                {
+                    Console.WriteLine("De qual curso deseja ver as estatísticas: ");
+                    APIRest.ReadCourses();
+                    index = int.Parse(Console.ReadLine()) - 1;
+                    break;
+                }
+                catch (System.Exception e)
+                {
+                    Console.WriteLine(e.Data);
+                }
+            }
+            
+            APIRest.Statistics(index);
             break;
 
         case 6:
@@ -98,5 +148,6 @@ while (running)
             Console.WriteLine("Opção inválida");
             break;
     }
+    Console.WriteLine("Aperte qualquer tecla para prosseguir");
     Console.ReadKey(true);
 }
