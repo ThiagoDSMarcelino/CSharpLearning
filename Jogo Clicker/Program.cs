@@ -8,12 +8,13 @@ while (running)
 {
     Console.Clear();
     Console.WriteLine($"Seu dinheiro R$ {Factory.Coins}.00");
+    Console.WriteLine($"Moedas por click: {Factory.CoinsPerClick}.00");
     Console.WriteLine("Para produzir aperte 0");
     Console.WriteLine("Para abrir o menu de maquinas aperte 1");
     switch (Console.ReadKey(true).Key)
     {
         case ConsoleKey.D0:
-            Factory.Click(machines);
+            Factory.Click();
             break;
         case ConsoleKey.D1:
             Console.Clear();
@@ -24,8 +25,10 @@ while (running)
             try
             {
                 if (machines[int.Parse(Console.ReadLine()) - 1].Buy())
+                {
+                    Factory.Update(machines);
                     Console.WriteLine("Compra concluida");
-
+                }
                 else
                     Console.WriteLine("Dinehiro insuficiente");
             }
