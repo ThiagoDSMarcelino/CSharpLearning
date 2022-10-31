@@ -93,4 +93,9 @@ public static class MyExtensionMethods
 
         stream.Close();
     }
+    public static IEnumerable<string[]> Split(this Enumerable<string> coll)
+    {
+        foreach (var el in coll)
+            yield return el.Split(";");
+    }
 }
