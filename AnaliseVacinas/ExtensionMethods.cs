@@ -1,3 +1,4 @@
+
 public static class ExtensionMethods
 {
     public static IEnumerable<T> Prepend<T>(this IEnumerable<T> coll, T item)
@@ -81,29 +82,50 @@ public static class ExtensionMethods
 
         stream.Close();
     }
-    public static IEnumerable<string[]> Split(this IEnumerable<string> coll, string value = ";")
+    public static IEnumerable<string[]> Split(this IEnumerable<string> coll, char separetor = ';')
     {
         foreach (var line in coll)
-            yield return line.Split(value);
+            yield return line.Split(separetor);
     }
-    public static IEnumerable<string> Find(this IEnumerable<string> coll, string findValue)
+    public static IEnumerable<string> FindAll(this IEnumerable<string> coll, string findValue)
     {
         foreach (var line in coll)
             if (line.Contains(findValue.ToUpper()))
                 yield return line;
     }
-    public static IEnumerable<string> NotFind(this IEnumerable<string> coll, string findValue)
-    {
-        foreach (var line in coll)
-            if (!line.Contains(findValue.ToUpper()))
-                yield return line;
-    }
     public static int Sum(this IEnumerable<string> coll)
     {
-        coll.Split(",");
-        foreach (var element in coll)
-            if (element.Count() < 2)
-            Console.WriteLine(element);
-        return 1;
+        int total = 0;
+        foreach (var line in coll.Split(','))
+        {
+            string number = "";
+            foreach (var element in line[1])
+            {
+                if (!Char.IsNumber(element))
+                    break;
+                number += element;
+            }
+            if (number != "")
+                total += int.Parse(number);
+        }
+        return total;
+    }
+    public static IEnumerable<string> FindAllList(this IEnumerable<string> coll, string[] findValues)
+    {
+        foreach (var line in coll)
+            foreach (var value in findValues)
+                if (line.Contains(value.ToUpper()))
+                {
+                    yield return line;
+                    break;
+                }
+
+    }
+    public static void Save_CSV<T>(this IEnumerable<T> coll, string name)
+    {
+        var stream = new StreamWriter($"./Data/{name}.csv");
+        foreach (var item in coll)
+            stream.WriteLine(item);
+        stream.Close();
     }
 }
