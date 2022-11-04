@@ -1,31 +1,21 @@
 ﻿using System;
+using System.Collections.Generic;
 
 var df = "Data/LAB_PR_COV.csv"
     .Open()
     .Skip(1);
-int total = df.Count();
-
-var coronavac = df.FindAllList(new string[] { "CORONAVAC" });
-var butantan = df.FindAllList(new string[] { "BUTANTAN" });
-var astra = df.FindAllList(new string[] { "ASTRAZENECA", "ASTRAZENICA" });
-var fiocruz = df.FindAllList(new string[] { "FIOCRUZ" });
-var pfizer = df.FindAllList(new string[] { "PFIZER" });
-var oxford = df.FindAllList(new string[] { "OXFORD" });
-var sinovac = df.FindAllList(new string[] { "SINOVAC" });
-var nao = df.FindAllList(new string[] { "NAO" });
 
 
-coronavac.Save_CSV("Coronavac");
-int sumCoronavac = coronavac.Sum();
+List<string[]> allVac = new List<string[]>();
+allVac.Add(new string[] { "CORONAVAC", "CAR", "CO", "CRO" });
+allVac.Add(new string[] { "BUTANTAN", "BU", "BT", "BI", "TANTAN" });
+allVac.Add(new string[] { "ASTRAZENECA", "AZ", "AS", "ATRA" });
+allVac.Add(new string[] { "FIOCRUZ", "FI", "CRUZ" });
+allVac.Add(new string[] { "PFIZER", "PHI", "PF", "FI", "PZ", "PI", "FAI", "FHI", "PLI", "PTI", "PHY", "FEI", "PAI", "PRI" });
+allVac.Add(new string[] { "OXFORD", "OX", "0X", "ORF", "ORO", "OSF", "OKF", "EXF" });
+allVac.Add(new string[] { "SINOVAC", "SIN", "SIN" });
+allVac.Add(new string[] { "OSWALDO", "OSVALDO" });
+allVac.Add(new string[] { "JANSSEN", "JANS", "JAN", "JENS", "JONS", "JHAN", "JONH", "JOHS", "JOHN", "JHON", "JAHN", "JAHS" });
+allVac.Add(new string[] { "INDIA" });
 
-Console.WriteLine(total);
-int newTotal = coronavac.Count() + butantan.Count() + astra.Count() + fiocruz.Count() + pfizer.Count()+ sinovac.Count() + oxford.Count() + nao.Count();
-Console.WriteLine(newTotal);
-Console.WriteLine(coronavac.Count());
-Console.WriteLine(butantan.Count());
-Console.WriteLine(astra.Count());
-Console.WriteLine(fiocruz.Count());
-Console.WriteLine(pfizer.Count());
-Console.WriteLine(oxford.Count());
-Console.WriteLine(sinovac.Count());
-Console.WriteLine(nao.Count());
+df.FazTudo(allVac);

@@ -1,6 +1,60 @@
+using System;
+using System.IO;
+using System.Collections.Generic;
 
 public static class ExtensionMethods
 {
+    public static double Average<T>(
+        this IEnumerable<T> coll,
+        Func<T, double> func
+    )
+    {
+        double average = 0;
+        var it = coll.GetEnumerator();
+        while (it.MoveNext())
+            average += func(it.Current);
+        return average / coll.Count();
+    }
+    public static int Max<T>(
+        this IEnumerable<T> coll,
+        Func<T, int> func
+    )
+    {
+        int max = int.MinValue;
+        var it = coll.GetEnumerator();
+        while (it.MoveNext())
+            if (max < func(it.Current))
+                max = func(it.Current);
+        return max;
+    }
+    public static int Min<T>(
+        this IEnumerable<T> coll,
+        Func<T, int> func
+    )
+    {
+        int min = int.MaxValue;
+        var it = coll.GetEnumerator();
+        while (it.MoveNext())
+            if (min > func(it.Current))
+                min = func(it.Current);
+        return min;
+    }
+    public static IEnumerable<T> Where<T>(
+        this IEnumerable<T> coll,
+        Func<T, bool> condition
+    )
+    {
+        var it = coll.GetEnumerator();
+        while (it.MoveNext())
+            if (condition(it.Current))
+                yield return it.Current;
+    }
+    public static IEnumerable<R> Select<T, R>(this IEnumerable<T> coll, Func<T, R> func)
+    {
+        var it = coll.GetEnumerator();
+        while (it.MoveNext())
+            yield return func(it.Current);
+    }
     public static IEnumerable<T> Prepend<T>(this IEnumerable<T> coll, T item)
     {
         yield return item;
@@ -112,20 +166,38 @@ public static class ExtensionMethods
     }
     public static IEnumerable<string> FindAllList(this IEnumerable<string> coll, string[] findValues)
     {
+        List<string> foundValues = new List<string>();
+
         foreach (var line in coll)
+        {
+            bool found = false;
             foreach (var value in findValues)
+            {
                 if (line.Contains(value.ToUpper()))
                 {
-                    yield return line;
+                    found = true;
                     break;
                 }
-
+            }
+            if (found)
+                foundValues.Add(line);
+            else
+                yield return line;
+        }
+        foundValues.Save_CSV(findValues[0]);
     }
     public static void Save_CSV<T>(this IEnumerable<T> coll, string name)
     {
-        var stream = new StreamWriter($"./Data/{name}.csv");
+        var stream = new StreamWriter($"./Data/Vacs/{name}.csv");
         foreach (var item in coll)
             stream.WriteLine(item);
         stream.Close();
+    }
+    public static void FazTudo(this IEnumerable<string> coll, List<string[]> vacNames)
+    {
+        foreach (var vacs in vacNames)
+            coll = coll.FindAllList(vacs);
+        Console.WriteLine(coll.Count());
+        coll.Save_CSV("Restante");
     }
 }
