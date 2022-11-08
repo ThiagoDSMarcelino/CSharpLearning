@@ -12,10 +12,14 @@ allVac.Add(new string[] { "BUTANTAN", "BU", "BT", "BI", "TANTAN" });
 allVac.Add(new string[] { "ASTRAZENECA", "AZ", "AS", "ATRA" });
 allVac.Add(new string[] { "FIOCRUZ", "FI", "CRUZ" });
 allVac.Add(new string[] { "PFIZER", "PHI", "PF", "FI", "PZ", "PI", "FAI", "FHI", "PLI", "PTI", "PHY", "FEI", "PAI", "PRI" });
-allVac.Add(new string[] { "OXFORD", "OX", "0X", "ORF", "ORO", "OSF", "OKF", "EXF" });
+allVac.Add(new string[] { "OXFORD", "OX", "0X", "ORF", "ORO", "OSF", "OKF", "EXF", "OSWALDO", "OSVALDO" });
 allVac.Add(new string[] { "SINOVAC", "SIN", "SIN" });
-allVac.Add(new string[] { "OSWALDO", "OSVALDO" });
 allVac.Add(new string[] { "JANSSEN", "JANS", "JAN", "JENS", "JONS", "JHAN", "JONH", "JOHS", "JOHN", "JHON", "JAHN", "JAHS" });
 allVac.Add(new string[] { "INDIA" });
+allVac.Add(new string[] { "Dose sem indentificação", "Dose" });
 
-df.FazTudo(allVac);
+
+
+foreach (var vacs in allVac)
+    df = df.FindAllList(vacs);
+df.Save_CSV("Restante");

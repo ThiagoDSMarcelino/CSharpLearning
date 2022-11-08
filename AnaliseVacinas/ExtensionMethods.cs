@@ -195,9 +195,6 @@ public static class ExtensionMethods
     }
     public static void FazTudo(this IEnumerable<string> coll, List<string[]> vacNames)
     {
-        foreach (var vacs in vacNames)
-            coll = coll.FindAllList(vacs);
-        Console.WriteLine(coll.Count());
-        coll.Save_CSV("Restante");
+        
     }
 }
