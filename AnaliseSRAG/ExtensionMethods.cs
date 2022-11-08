@@ -14,39 +14,6 @@ public static class ExtensionMethods
 
         stream.Close();
     }
-    public static IEnumerable<string> Read(this IEnumerable<string> coll)
-    {
-        var it = coll.GetEnumerator();
-        var header = it.MoveNext() ? it.Current.Replace("\"", "").Split(';').ToList() : null;
-        if (header == null)
-            throw new Exception();
-        
-        int[] dataIndex = new int[]
-        {
-            header.IndexOf("CLASSI_FIN"),
-            header.IndexOf("VACINA_COV"),
-            header.IndexOf("DOSE_1_COV"),
-            header.IndexOf("DOSE_2_COV"),
-            header.IndexOf("DOSE_REF"),
-
-        };
-        while (it.MoveNext())
-        {
-            var item = it.Current.Replace("\"", "").Split(';');
-            string newData = "";
-            bool sla = false;
-
-            foreach (var data in dataIndex)
-            {
-                newData += $"{item[data]} -- ";
-                if (item[data] == "")
-                    sla = true;
-            }
-            // if (sla)
-            //     Console.WriteLine(newData);
-            yield return newData;
-        }
-    }
     public static IEnumerable<T> Save_CSV<T>(this IEnumerable<T> coll, string path)
     {
         var stream = new StreamWriter($"./{path}");
@@ -54,5 +21,53 @@ public static class ExtensionMethods
             stream.WriteLine(item);
         stream.Close();
         return coll;
+    }
+    public static IEnumerable<string> Read(this IEnumerable<string> coll, IDictionary<string, int> obrigatorio, IDictionary<string, int> essencial)
+    {
+        var it = coll.GetEnumerator();
+        var header = it.MoveNext() ? it.Current.Replace("\"", "").Split(';').ToList() : null;
+        if (header == null)
+            throw new Exception();
+
+        while (it.MoveNext())
+        {
+            var item = it.Current.Replace("\"", "").Split(';');
+            string newData = "";
+            bool todosDados = true;
+
+            foreach (var data in obrigatorio)
+            {
+                newData += $"{data.Key}: {item[data.Value]};";
+                if (item[data.Value] == "")
+                    todosDados = false;
+            }
+
+            foreach (var data in essencial)
+                newData += $"{data.Key}: {item[data.Value]};";
+            
+            if (todosDados)
+                yield return newData;
+        }
+    }
+    public static void Estatisticas(this IEnumerable<string> coll)
+    {
+        var it = coll.GetEnumerator();
+        var header = it.MoveNext() ? it.Current.Replace("\"", "").Split(';').ToList() : null;
+        if (header == null)
+            throw new Exception();
+
+        while (it.MoveNext())
+        {
+            var item = it.Current.Replace(" ", "").Split(';');
+            
+        }
+    }
+    public static int GetIndex(this IEnumerable<string> coll, string value)
+    {
+        var it = coll.GetEnumerator();
+        var header = it.MoveNext() ? it.Current.Replace("\"", "").Split(';').ToList() : null;
+        if (header == null)
+            throw new Exception();
+        return header.IndexOf(value);
     }
 }
