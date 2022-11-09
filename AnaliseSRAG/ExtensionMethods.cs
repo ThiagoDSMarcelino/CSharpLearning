@@ -14,60 +14,99 @@ public static class ExtensionMethods
 
         stream.Close();
     }
-    public static IEnumerable<T> Save_CSV<T>(this IEnumerable<T> coll, string path)
-    {
-        var stream = new StreamWriter($"./{path}");
-        foreach (var item in coll)
-            stream.WriteLine(item);
-        stream.Close();
-        return coll;
-    }
-    public static IEnumerable<string> Read(this IEnumerable<string> coll, IDictionary<string, int> obrigatorio, IDictionary<string, int> essencial)
+    public static IEnumerable<CasoCovid> Read(this IEnumerable<string> coll)
     {
         var it = coll.GetEnumerator();
         var header = it.MoveNext() ? it.Current.Replace("\"", "").Split(';').ToList() : null;
         if (header == null)
             throw new Exception();
-
+        
+        var properties = typeof(CasoCovid).GetProperties();
         while (it.MoveNext())
         {
             var item = it.Current.Replace("\"", "").Split(';');
-            string newData = "";
-            bool todosDados = true;
-
-            foreach (var data in obrigatorio)
-            {
-                newData += $"{data.Key}: {item[data.Value]};";
-                if (item[data.Value] == "")
-                    todosDados = false;
-            }
-
-            foreach (var data in essencial)
-                newData += $"{data.Key}: {item[data.Value]};";
+            CasoCovid newCasoCovid = new CasoCovid();
+            foreach (var prop in properties)
+                newCasoCovid.SetValues(prop.Name, item[header.IndexOf(prop.Name)]);
             
-            if (todosDados)
-                yield return newData;
+            if
+            (
+                newCasoCovid.CLASSI_FIN == 5 && 
+                newCasoCovid.EVOLUCAO != 0 &&
+                newCasoCovid.VACINA_COV != 0
+            )
+                yield return newCasoCovid;
         }
     }
-    public static void Estatisticas(this IEnumerable<string> coll)
+    public static IEnumerable<CasoCovid> QtdDoses(this IEnumerable<CasoCovid> coll, int qtdDoses)
     {
         var it = coll.GetEnumerator();
-        var header = it.MoveNext() ? it.Current.Replace("\"", "").Split(';').ToList() : null;
-        if (header == null)
-            throw new Exception();
+        while (it.MoveNext())
+        {
+            var item = it.Current;
+            switch (qtdDoses)
+            {
+                case 0:
+                    if (item.VACINA_COV == 2)
+                        yield return item;
+                    break;
+                
+                case 1:
+                    if (item.FAB_COV_1 != default(string) && item.FAB_COV_2 == default(string))
+                        yield return item;
+                    break;
+                case 2:
+                    if (item.FAB_COV_2 != default(string) && item.FAB_COVREF == default(string))
+                        yield return item;
+                    break;
+                case 3:
+                    if (item.FAB_COVREF != default(string))
+                        yield return item;
+                    break;
+            }
+        }
+            
+    }
+    public static IEnumerable<CasoCovid> Estatisticas(this IEnumerable<CasoCovid> coll, string name)
+    {
+        int vivos = 0;
+        int mortos = 0;
+        var it = coll.GetEnumerator();
 
         while (it.MoveNext())
         {
-            var item = it.Current.Replace(" ", "").Split(';');
-            
+            var item = it.Current;
+            if (item.EVOLUCAO == 1)
+                vivos++;
+            else if (item.EVOLUCAO == 2)
+                mortos++;
         }
+
+        float total = vivos + mortos;
+        string dataStr = "";
+        dataStr += $"Porcentagem de vivos e mortos para aqueles que tomaram até a {name}\n";
+        dataStr += $"Vivos: {vivos / total * 100}\n";
+        dataStr += $"Mortos: {mortos / total * 100}\n";
+        Console.WriteLine(dataStr);
+        return coll;
     }
-    public static int GetIndex(this IEnumerable<string> coll, string value)
+    public static int CurePerVac(this IEnumerable<CasoCovid> coll, string vacName)
     {
+        int vacCount = 0;
         var it = coll.GetEnumerator();
-        var header = it.MoveNext() ? it.Current.Replace("\"", "").Split(';').ToList() : null;
-        if (header == null)
-            throw new Exception();
-        return header.IndexOf(value);
+        while (it.MoveNext())
+        {
+            var item = it.Current;
+            if (item.EVOLUCAO == 1)
+            {
+                if (item.FAB_COV_1 != null && item.FAB_COV_1.Contains(vacName, StringComparison.OrdinalIgnoreCase))
+                    vacCount++;
+                if (item.FAB_COV_2 != null && item.FAB_COV_2.Contains(vacName, StringComparison.OrdinalIgnoreCase))
+                    vacCount++;
+                if (item.FAB_COVREF != null && item.FAB_COVREF.Contains(vacName, StringComparison.OrdinalIgnoreCase))
+                    vacCount++;
+            }
+        }
+        return vacCount;
     }
 }

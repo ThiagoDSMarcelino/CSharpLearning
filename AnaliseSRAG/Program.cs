@@ -1,22 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 
-var df = "Data/INFLUD21-24-10-2022.csv".Open();
+var df = "Data/INFLUD21-24-10-2022.csv".Open().Read();
 
-IDictionary<string, int> obrigatorio = new Dictionary<string, int>()
-{
-    {"CLASSI_FIN", df.GetIndex("CLASSI_FIN")},
-    {"VACINA_COV", df.GetIndex("VACINA_COV")},
-    {"EVOLUCAO", df.GetIndex("EVOLUCAO")},
-};
-IDictionary<string, int> essencial = new Dictionary<string, int>()
-{
-    {"DOSE_1_COV", df.GetIndex("DOSE_1_COV")},
-    {"DOSE_2_COV", df.GetIndex("DOSE_2_COV")},
-    {"DOSE_REF", df.GetIndex("DOSE_REF")},
-};
+// EX. 1
+// var semVacina = df.QtdDoses(0).Estatisticas("Sem vacina");
+// var primeiraDose = df.QtdDoses(1).Estatisticas("Priemira dose");
+// var segundaDose = df.QtdDoses(2).Estatisticas("Segunda dose");
+// var doseReforco = df.QtdDoses(3).Estatisticas("Dose de reforço");
 
-List<string> sla = new List<string>();
+// EX. 2
+int india = df.CurePerVac("india");
+int astrazeneca = df.CurePerVac("astrazeneca");
+int butantan = df.CurePerVac("butantan");
 
-var sla = df.Read(obrigatorio, essencial).Save_CSV("Data/testes/sla.csv");
+Console.WriteLine(india);
+Console.WriteLine(astrazeneca);
+Console.WriteLine(butantan);
