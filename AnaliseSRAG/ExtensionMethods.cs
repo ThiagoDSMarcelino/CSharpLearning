@@ -21,92 +21,33 @@ public static class ExtensionMethods
         if (header == null)
             throw new Exception();
         
-        var properties = typeof(CasoCovid).GetProperties();
         while (it.MoveNext())
         {
-            var item = it.Current.Replace("\"", "").Split(';');
+            var caso = it.Current.Replace("\"", "").Split(';');
             CasoCovid newCasoCovid = new CasoCovid();
-            foreach (var prop in properties)
-                newCasoCovid.SetValues(prop.Name, item[header.IndexOf(prop.Name)]);
             
-            if
-            (
-                newCasoCovid.CLASSI_FIN == 5 && 
-                newCasoCovid.EVOLUCAO != 0 &&
-                newCasoCovid.VACINA_COV != 0
-            )
-                yield return newCasoCovid;
-        }
-    }
-    public static IEnumerable<CasoCovid> QtdDoses(this IEnumerable<CasoCovid> coll, int qtdDoses)
-    {
-        var it = coll.GetEnumerator();
-        while (it.MoveNext())
-        {
-            var item = it.Current;
-            switch (qtdDoses)
+            if (int.Parse(caso[header.IndexOf("NU_IDADE_N")]) < 0)
+                continue;
+            newCasoCovid.Age = byte.Parse(caso[header.IndexOf("NU_IDADE_N")]);
+            newCasoCovid.IsDead = caso[header.IndexOf("EVOLUCAO")] == "2";
+            newCasoCovid.IsCovid = caso[header.IndexOf("CLASSI_FIN")] == "5";
+            if (caso[header.IndexOf("FAB_COV_1")] != "")
             {
-                case 0:
-                    if (item.VACINA_COV == 2)
-                        yield return item;
-                    break;
-                
-                case 1:
-                    if (item.FAB_COV_1 != default(string) && item.FAB_COV_2 == default(string))
-                        yield return item;
-                    break;
-                case 2:
-                    if (item.FAB_COV_2 != default(string) && item.FAB_COVREF == default(string))
-                        yield return item;
-                    break;
-                case 3:
-                    if (item.FAB_COVREF != default(string))
-                        yield return item;
-                    break;
+                newCasoCovid.Vac1 = caso[header.IndexOf("FAB_COV_1")];
+                newCasoCovid.NumberVacs++;
             }
-        }
+            if (caso[header.IndexOf("FAB_COV_2")] != "")
+            {
+                newCasoCovid.Vac1 = caso[header.IndexOf("FAB_COV_2")];
+                newCasoCovid.NumberVacs++;
+            }
+            if (caso[header.IndexOf("FAB_COVREF")] != "")
+            {
+                newCasoCovid.Vac1 = caso[header.IndexOf("FAB_COVREF")];
+                newCasoCovid.NumberVacs++;
+            }
             
-    }
-    public static IEnumerable<CasoCovid> Estatisticas(this IEnumerable<CasoCovid> coll, string name)
-    {
-        int vivos = 0;
-        int mortos = 0;
-        var it = coll.GetEnumerator();
-
-        while (it.MoveNext())
-        {
-            var item = it.Current;
-            if (item.EVOLUCAO == 1)
-                vivos++;
-            else if (item.EVOLUCAO == 2)
-                mortos++;
+            yield return newCasoCovid;
         }
-
-        float total = vivos + mortos;
-        string dataStr = "";
-        dataStr += $"Porcentagem de vivos e mortos para aqueles que tomaram até a {name}\n";
-        dataStr += $"Vivos: {vivos / total * 100}\n";
-        dataStr += $"Mortos: {mortos / total * 100}\n";
-        Console.WriteLine(dataStr);
-        return coll;
-    }
-    public static int CurePerVac(this IEnumerable<CasoCovid> coll, string vacName)
-    {
-        int vacCount = 0;
-        var it = coll.GetEnumerator();
-        while (it.MoveNext())
-        {
-            var item = it.Current;
-            if (item.EVOLUCAO == 1)
-            {
-                if (item.FAB_COV_1 != null && item.FAB_COV_1.Contains(vacName, StringComparison.OrdinalIgnoreCase))
-                    vacCount++;
-                if (item.FAB_COV_2 != null && item.FAB_COV_2.Contains(vacName, StringComparison.OrdinalIgnoreCase))
-                    vacCount++;
-                if (item.FAB_COVREF != null && item.FAB_COVREF.Contains(vacName, StringComparison.OrdinalIgnoreCase))
-                    vacCount++;
-            }
-        }
-        return vacCount;
     }
 }
