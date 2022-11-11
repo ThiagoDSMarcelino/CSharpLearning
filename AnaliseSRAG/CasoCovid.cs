@@ -1,12 +1,19 @@
-using System;
-
 public class CasoCovid
 {
-    public byte Age { get; set; } = 0;
+    public int Age { get; set; }
     public bool IsDead { get; set; }
     public bool IsCovid { get; set; }
-    public string Vac1 { get; set; } = "";
-    public string Vac2 { get; set; } = "";
-    public string VacRef { get; set; } = "";
+    public Vaccines Vaccine { get; set; } = Vaccines.Desconhecido;
     public byte NumberVacs { get; set; } = 0;
+}
+
+public enum Vaccines
+{
+    Coronavac,
+    Astrazeneca,
+    Pfizer,
+    Sinovac,
+    Janssen,
+    India,
+    Desconhecido
 }
