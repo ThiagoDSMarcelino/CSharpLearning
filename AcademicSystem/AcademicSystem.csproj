@@ -3,7 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net6.0</TargetFramework>
-    <RootNamespace>Implementação_de_Lista_encadeada</RootNamespace>
+    <RootNamespace>AcademicSystem</RootNamespace>
   </PropertyGroup>
 
 </Project>

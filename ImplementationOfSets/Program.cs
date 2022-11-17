@@ -6,14 +6,9 @@ Set empty3 = new EmptySet();
 Set empty4 = new EmptySet();
 
 
-PairSet pair1 = new PairSet();
-pair1.A = empty1;
-pair1.B = empty2;
+PairSet pair1 = new PairSet(empty1, empty2);
 
-PairSet pair2 = new PairSet();
-pair2.A = empty3;
-pair2.B = empty4;
-
+PairSet pair2 = new PairSet(empty3, empty4);
 
 Set union = pair1.Union(pair2);
 

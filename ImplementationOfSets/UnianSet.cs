@@ -1,11 +1,6 @@
 public class UnionSet: Set
 {
-    public PairSet(Set a, Set b)
-    {
-        A = a;
-        B = b;
-    }
-    public PairSet(Set a, Set b)
+    public UnionSet(Set a, Set b)
     {
         A = a;
         B = b;
